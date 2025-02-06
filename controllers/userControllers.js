@@ -102,6 +102,50 @@ module.exports.unfollowCategory = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+module.exports.followTag = catchAsyncErrors(async (req, res, next) => {
+    const userData = req.user;
+    const userId = userData.userId;
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found !" });
+        }
+        const tag = await TagModel.findById(req.body.tagId);
+
+        // Prevent duplicate follows
+        if (!user.followedtags.includes(tag?._id)) {
+            user.followedtags.push(tag._id);
+        }
+
+        await user.save();
+        return res.json({ message: "Followed successfully!" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+module.exports.unfollowTag = catchAsyncErrors(async (req, res, next) => {
+    const userData = req.user;
+    const userId = userData.userId;
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found !" });
+        }
+
+        const tag = await TagModel.findById(req.body.tagId);
+        // Remove from followed lists
+        user.followedtags = user.followedtags.filter(id => id.toString() !== tag._id.toString());
+
+        await user.save();
+        return res.json({ message: "Unfollowed successfully!" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports.subscribe = catchAsyncErrors(async (req, res, next) => {
     const { email } = req.body;
 

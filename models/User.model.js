@@ -46,7 +46,8 @@ const UserSchema = new mongoose.Schema(
         },
         WebsiteLink: { type: String },
         Message: { type: String },
-        followedCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'categories' }] // Example: ["Technology", "Business"]
+        followedCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'categories' }], // Example: ["Technology", "Business"]
+        followedtags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'tags' }] // Example: ["Technology", "Business"]
     },
     { timestamps: true }
 );
